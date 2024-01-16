@@ -1,0 +1,76 @@
+import tkinter as tk
+from tkinter import font
+from datetime import datetime
+
+class Task:
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+        self.timestamp = datetime.now()
+
+class ChatGPTStyleApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("ChatGPT 风格任务管理")
+
+        self.tasks = []
+
+        # 设置字体和颜色
+        chatgpt_font = font.Font(family="Arial", size=14)
+        chatgpt_bg_color = "#f0f0f0"
+        chatgpt_text_color = "#333333"
+
+        # 创建界面元素
+        self.label = tk.Label(master, text="ChatGPT 风格任务管理", font=chatgpt_font, bg=chatgpt_bg_color, fg=chatgpt_text_color)
+        self.label.pack(pady=10)
+
+        self.name_label = tk.Label(master, text="任务名称:", font=chatgpt_font, bg=chatgpt_bg_color, fg=chatgpt_text_color)
+        self.name_label.pack(pady=5)
+        self.name_entry = tk.Entry(master, font=chatgpt_font)
+        self.name_entry.pack(pady=5)
+
+        self.desc_label = tk.Label(master, text="任务描述:", font=chatgpt_font, bg=chatgpt_bg_color, fg=chatgpt_text_color)
+        self.desc_label.pack(pady=5)
+        self.desc_entry = tk.Entry(master, font=chatgpt_font)
+        self.desc_entry.pack(pady=5)
+
+        self.add_button = tk.Button(master, text="添加任务", command=self.add_task, font=chatgpt_font, bg="#4CAF50", fg="white")
+        self.add_button.pack(pady=10)
+
+        self.display_button = tk.Button(master, text="查看所有任务", command=self.display_tasks, font=chatgpt_font, bg="#008CBA", fg="white")
+        self.display_button.pack(pady=5)
+
+        self.sort_button = tk.Button(master, text="按时间戳排序", command=self.sort_tasks, font=chatgpt_font, bg="#f44336", fg="white")
+        self.sort_button.pack(pady=5)
+
+        self.quit_button = tk.Button(master, text="退出", command=master.quit, font=chatgpt_font, bg="gray", fg="white")
+        self.quit_button.pack(pady=10)
+
+    def add_task(self):
+        name = self.name_entry.get()
+        description = self.desc_entry.get()
+        task = Task(name, description)
+        self.tasks.append(task)
+        self.display_result(f'任务 "{name}" 已添加成功！')
+
+    def display_tasks(self):
+        if not self.tasks:
+            self.display_result('当前没有任务。')
+        else:
+            self.display_result('所有任务：\n' + '\n'.join([f'{index + 1}. {task.name} - {task.description} (刚刚添加)' for index, task in enumerate(self.tasks)]))
+
+    def sort_tasks(self):
+        if not self.tasks:
+            self.display_result('当前没有任务。')
+        else:
+            self.tasks = sorted(self.tasks, key=lambda x: x.timestamp)
+            self.display_result('任务已按时间戳排序。')
+
+    def display_result(self, message):
+        result_label = tk.Label(self.master, text=message, font=font.Font(family="Arial", size=12), bg="#f0f0f0", fg="#333333")
+        result_label.pack(pady=10)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ChatGPTStyleApp(root)
+    root.mainloop()
